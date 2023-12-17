@@ -27,7 +27,6 @@ ui_page 'html/index.html'
 files {
     'html/index.html',
  -- 'html/sounds/demo.ogg', (.ogg | .mp3)
-    'html/sounds/demo.ogg',
-    'html/sounds/bigben.ogg',
+    'html/sounds/demo.ogg'
     -- Add other sound files here...
 }
