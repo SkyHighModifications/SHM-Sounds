@@ -107,7 +107,7 @@ AddEventHandler('SHM-Sounds_CL:PlaySpatiallyAtCoords', function(maxDistance, aud
                 audioCategory = 'playSound',
                 audioFile = audioFile,
                 audioVolume = audioVolume or standardVolumeOutput,
-                coords = { x = coords.x, y = coords.y, z = coords.z } or { x = Config_SHM.defaultCoords.x, y = Config_SHM.defaultCoords.y, z = Config_SHM.defaultCoords.z }
+                coords = { x = coords.x, y = coords.y, z = coords.z } or { x = 0.0, y = 0.0, z = 0.0 }
             })
         end
     end
