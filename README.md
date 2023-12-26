@@ -25,5 +25,8 @@ defaultCoords = { -- Default
     }
 
 # ChangeLog
-- V1.0.0 / Initial Release
-- V1.0.1 / Minor adjustments that were causing script issues!
+* V1.0.0
+  - Initial Release
+  - 
+*V1.0.1
+  - Minor adjustments that were causing script issues!
