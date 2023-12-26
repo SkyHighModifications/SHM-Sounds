@@ -110,7 +110,11 @@ AddEventHandler(GetCurrentResourceName() .. ":WarningPrint", function(msg)
   WarningPrint(msg)
 end)
 
-
+ local function LogUpdateStatus(_type, message)
+  local color = (_type == 'success') and '^2' or '^1'
+  local formattedMessage = string.format("[%sUPDATE^7] ^3%s^7: %s%s^7", color, GetCurrentResourceName(), color, message)
+  print(formattedMessage)
+end
 
 AddEventHandler('onResourceStart', function(resource)
   -- Check if the current resource is the one being started
