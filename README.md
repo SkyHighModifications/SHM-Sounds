@@ -23,3 +23,7 @@ defaultCoords = { -- Default
         y = 0.0,
         z = 0.0,
     }
+
+# ChangeLog
+- V1.0.0 / Initial Release
+- V1.0.1 / Minor adjustments that were causing script issues!
