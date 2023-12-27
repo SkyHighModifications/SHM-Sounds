@@ -1,6 +1,4 @@
-Version: 1.0.1
+1.0.1
 
-Changelog:
 - Minor adjustments that were causing script issues!
 
-End of Changelog
