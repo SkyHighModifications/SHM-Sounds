@@ -133,19 +133,18 @@ end
 
 -- Function to log changelog information
 local function LogChangelog(changelog)
-  print("Changelog:")
   print(changelog)
-  print("End of Changelog\n")
 end
 
 -- Function to parse version and changelog from version.txt
 local function ParseVersionAndChangelog(text)
   local versions = {}
-  for version, changelog in text:gmatch("Version:%s*(.-)\n\nChangelog:(.-)\nEnd of Changelog") do
+  for version, changelog in text:gmatch("Version:%s*(.-)\n\nChangelog:%s*(.-)\n\nEnd of Changelog") do
       versions[version:gsub("%s+", "")] = changelog
   end
   return versions
 end
+
 
 AddEventHandler('onResourceStart', function(resource)
   -- Check if the current resource is the one being started
