@@ -110,63 +110,57 @@ AddEventHandler(GetCurrentResourceName() .. ":WarningPrint", function(msg)
   WarningPrint(msg)
 end)
 
--- Function to log changelog information
-local function LogChangelog(changelog)
-  print("Changelog:")
-  print(changelog)
-  print("End of Changelog\n")
-end
-
 -- Function to log update status
 local function LogUpdateStatus(_type, message)
-  -- Define color codes for success and error messages
-  local color = (_type == 'success') and '^2' or '^1'
-  local formattedMessage = string.format(
-      "[%sUPDATE^7] ^3%s^7: %s%s^7", 
-      color, 
-      GetCurrentResourceName(), 
-      color, 
-      message
-  )
-  print(formattedMessage)
+    -- Define color codes for success and error messages
+    local color = (_type == 'success') and '^2' or '^1'
+    local formattedMessage = string.format(
+        "[%sUPDATE^7] ^3%s^7: %s%s^7", 
+        color, 
+        GetCurrentResourceName(), 
+        color, 
+        message
+    )
+    print(formattedMessage)
 end
 
 -- Function to log changelog information
 local function LogChangelog(changelog)
-  print(changelog)
+    print(changelog)
 end
 
 -- Function to parse version and changelog from version.txt
 local function ParseVersionAndChangelog(text)
-  local versions = {}
-  for version, changelog in text:gmatch("Version:%s*(.-)\n\nChangelog:%s*(.-)\n\nEnd of Changelog") do
-      versions[version:gsub("%s+", "")] = changelog
-  end
-  return versions
+    local versions = {}
+    for version, changelog in text:gmatch("Version:%s*(.-)\n\nChangelog:(.-)\nEnd of Changelog") do
+        versions[version:gsub("%s+", "")] = changelog
+    end
+    return versions
 end
 
-
 AddEventHandler('onResourceStart', function(resource)
-  -- Check if the current resource is the one being started
-  if GetCurrentResourceName() == resource then
-      -- Make an HTTP request to check for updates
-      PerformHttpRequest('https://raw.githubusercontent.com/SkyHighModifications/SHM-Sounds/main/version.txt', function(err, text, headers)
-          if not text then
-              LogUpdateStatus('error', 'Update check encountered an issue.')
-              return
-          end
+    -- Check if the current resource is the one being started
+    if GetCurrentResourceName() == resource then
+        -- Make an HTTP request to check for updates
+        PerformHttpRequest('https://raw.githubusercontent.com/SkyHighModifications/SHM-Sounds/main/version.txt', function(err, text, headers)
+            if not text then
+                LogUpdateStatus('error', 'Update check encountered an issue.')
+                return
+            end
 
-          local currentVersion = GetResourceMetadata(GetCurrentResourceName(), 'version')
-          local versions = ParseVersionAndChangelog(text)
+            local currentVersion = GetResourceMetadata(GetCurrentResourceName(), 'version')
+            local versions = ParseVersionAndChangelog(text)
 
-          LogUpdateStatus('success', string.format("Currently Installed Version: ^6%s^7", currentVersion))
+            LogUpdateStatus('success', string.format("Currently Installed Version: ^6%s^7", currentVersion))
 
-          -- Check if the current version is in the list
-          if versions[currentVersion] then
-              LogChangelog(versions[currentVersion])
-          else
-              LogUpdateStatus('error', "Changelog not found for the currently installed version.")
-          end
-      end)
-  end
+            -- Check if the current version is in the list
+            if versions[currentVersion] then
+                LogChangelog(versions[currentVersion])
+            else
+                LogUpdateStatus('error', "Changelog not found for the currently installed version.")
+            end
+        end)
+    end
 end)
+
+
