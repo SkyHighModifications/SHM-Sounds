@@ -110,10 +110,41 @@ AddEventHandler(GetCurrentResourceName() .. ":WarningPrint", function(msg)
   WarningPrint(msg)
 end)
 
- local function LogUpdateStatus(_type, message)
+-- Function to log changelog information
+local function LogChangelog(changelog)
+  print("Changelog:")
+  print(changelog)
+  print("End of Changelog\n")
+end
+
+-- Function to log update status
+local function LogUpdateStatus(_type, message)
+  -- Define color codes for success and error messages
   local color = (_type == 'success') and '^2' or '^1'
-  local formattedMessage = string.format("[%sUPDATE^7] ^3%s^7: %s%s^7", color, GetCurrentResourceName(), color, message)
+  local formattedMessage = string.format(
+      "[%sUPDATE^7] ^3%s^7: %s%s^7", 
+      color, 
+      GetCurrentResourceName(), 
+      color, 
+      message
+  )
   print(formattedMessage)
+end
+
+-- Function to log changelog information
+local function LogChangelog(changelog)
+  print("Changelog:")
+  print(changelog)
+  print("End of Changelog\n")
+end
+
+-- Function to parse version and changelog from version.txt
+local function ParseVersionAndChangelog(text)
+  local versions = {}
+  for version, changelog in text:gmatch("Version:%s*(.-)\n\nChangelog:(.-)\nEnd of Changelog") do
+      versions[version:gsub("%s+", "")] = changelog
+  end
+  return versions
 end
 
 AddEventHandler('onResourceStart', function(resource)
@@ -121,23 +152,21 @@ AddEventHandler('onResourceStart', function(resource)
   if GetCurrentResourceName() == resource then
       -- Make an HTTP request to check for updates
       PerformHttpRequest('https://raw.githubusercontent.com/SkyHighModifications/SHM-Sounds/main/version.txt', function(err, text, headers)
-          local currentVersion = GetResourceMetadata(GetCurrentResourceName(), 'version')
-
           if not text then
               LogUpdateStatus('error', 'Update check encountered an issue.')
               return
           end
 
-          LogUpdateStatus('success', string.format("Currently Installed Version: ^6%s^7", currentVersion))
-          LogUpdateStatus('success', string.format("Version in Sync: ^6%s^7", text))
+          local currentVersion = GetResourceMetadata(GetCurrentResourceName(), 'version')
+          local versions = ParseVersionAndChangelog(text)
 
-          -- Compare versions and notify the user
-          if text:gsub("%s+", "") == currentVersion:gsub("%s+", "") then
-              LogUpdateStatus('success', "Congratulations, you have the most up-to-date version.")
+          LogUpdateStatus('success', string.format("Currently Installed Version: ^6%s^7", currentVersion))
+
+          -- Check if the current version is in the list
+          if versions[currentVersion] then
+              LogChangelog(versions[currentVersion])
           else
-              local errorMessage = string.format("Your current version is out-of-date. Please upgrade to version ^4%s^7.", text)
-              LogUpdateStatus('error', errorMessage)
-              StopResource(GetCurrentResourceName()) -- Remove unnecessary condition
+              LogUpdateStatus('error', "Changelog not found for the currently installed version.")
           end
       end)
   end
